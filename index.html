@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>stop watch</title>
+</head>
+
+<body>
+  <div id="center">
+    <div id="timer" class="timer stopwatch"></div>
+  </div>
+  <script>
+    function createStopWatch(element) {
+      let offset,
+        clock = 0,
+        interval,
+        timer = createTimer(),
+        startButton = createButton("start", "start", start),
+        stopButton = createButton("stop", "stop", stop),
+        resetButton = createButton("reset", "reset", reset),
+        resumeButton = createButton("resume", "resume", resume);
+
+      element.appendChild(timer);
+      element.appendChild(startButton);
+      element.appendChild(stopButton);
+      element.appendChild(resumeButton);
+      element.appendChild(resetButton);
+
+      function createTimer() {
+        return document.createElement("h1");
+      }
+
+      function createButton(id, action, handler) {
+        let button = document.createElement("button");
+        button.innerHTML = action;
+        button.id = id;
+        button.addEventListener("click", function (event) {
+          handler();
+          event.preventDefaultl;
+        });
+        return button;
+      }
+
+      function run() {
+        clock += 1;
+        render();
+      }
+
+      function start() {
+        if (!interval) {
+          setElementDisplayStyle('resume', 'none');
+          setElementDisplayStyle('stop', 'inline-block');
+          offset = Date.now();
+          interval = setInterval(run, 1);
+        }
+      }
+
+      function stop() {
+        if (interval) {
+          setElementDisplayStyle('stop', 'none');
+          setElementDisplayStyle('resume', 'inline-block');
+          clearInterval(interval);
+          interval = null;
+        }
+      }
+
+      function resume() {
+        if (!interval) {
+          setElementDisplayStyle('resume', 'none');
+          setElementDisplayStyle('stop', 'inline-block');
+          offset = Date.now();
+          interval = setInterval(run, 1);
+        }
+      }
+
+      function reset() {
+        setElementDisplayStyle('resume', 'none');
+        setElementDisplayStyle('stop', 'inline-block');
+        clock = 0;
+        if (interval) {
+          clearInterval(interval);
+          interval = null;
+        }
+        render();
+      }
+
+      function render() {
+        hours = Math.floor(clock / 3600000);
+        mins = Math.floor((clock / 60000) % 60);
+        timer.innerHTML =
+          `${hours} : ${mins} : ${Math.floor((clock % 60000) / 1000)} : ${clock % 1000}`;
+      }
+
+      function setElementDisplayStyle(id, style) {
+        let element = document.getElementById(id);
+        element.style.display = style;
+      }
+
+      setElementDisplayStyle('resume', 'none');
+      setElementDisplayStyle('stop', 'inline-block');
+      render();
+    }
+
+    var element = document.getElementById("timer");
+    createStopWatch(element);
+  </script>
+</body>
+
+</html>
